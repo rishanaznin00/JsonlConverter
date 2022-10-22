@@ -56,7 +56,7 @@ public class JsonlConverter {
 
 	}
 
-	private static int generateJsonlFile(String inputFileName, final String delimeter, String splitChar,
+	public static int generateJsonlFile(String inputFileName, final String delimeter, String splitChar,
 			String outputFileName) {
 		Path inputPath = Paths.get(inputFileName);
 		try {
