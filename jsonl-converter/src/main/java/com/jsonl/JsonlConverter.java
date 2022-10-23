@@ -142,5 +142,23 @@ public class JsonlConverter {
 
 		return value;
 	}
+	
+	public static List<String> customSplit(String line, char splitChar){
+		List<String> list= new ArrayList<>();
+		char[] ltr= line.toCharArray();
+		StringBuilder sb= new StringBuilder();
+		boolean skip=false;
+		for(int i=0; i<ltr.length; i++) {
+			if(ltr[i]=='"') {
+				skip=!skip;
+			}else if(!skip && ltr[i]==splitChar) {
+				list.add(sb.toString());
+				sb=new StringBuilder();
+			}else if(ltr[i]!=splitChar) {
+				sb.append(ltr[i]);
+			}
+		}
+		return list;
+	}
 
 }
