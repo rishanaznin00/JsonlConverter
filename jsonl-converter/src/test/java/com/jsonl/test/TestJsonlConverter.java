@@ -16,25 +16,23 @@ public class TestJsonlConverter {
 
 	@Test
 	public void testConverter() {
-		String inputFileName="src/test/resource/input/DSV input 1.txt";
+		String inputFileName="src/test/resource/input/DSV input 1.jsonl";
 		 String delimeter=",";
-		char splitChar=',';
-		String outputFileName="src/test/resource/output/DSV output 1.txt";
+		String outputFileName="src/test/resource/output/DSV output 1.jsonl";
 		String expectedOutputFileName="src/test/resource/expectedOutput/JSONL output.jsonl";
 		
-		checkFiles(outputFileName, expectedOutputFileName, inputFileName, delimeter,splitChar );
+		checkFiles(outputFileName, expectedOutputFileName, inputFileName, delimeter );
 		
 		 inputFileName="src/test/resource/input/DSV input 2.txt";
 		 delimeter="|";
-		 splitChar='|';
-		 outputFileName="src/test/resource/output/DSV output 2.txt";
-		 checkFiles(outputFileName, expectedOutputFileName, inputFileName, delimeter,splitChar );
+		 outputFileName="src/test/resource/output/DSV output 2.jsonl";
+		 checkFiles(outputFileName, expectedOutputFileName, inputFileName, delimeter );
 			
 			 
 	}
 
-	private void checkFiles(String outputFileName, String expectedOutputFileName, String inputFileName, String delimeter, char splitChar) {
-		int result= JsonlConverter.generateJsonlFile(inputFileName, delimeter, splitChar, outputFileName);
+	private void checkFiles(String outputFileName, String expectedOutputFileName, String inputFileName, String delimeter) {
+		int result= JsonlConverter.generateJsonlFile(inputFileName, delimeter, outputFileName);
 		
 		
 		try {

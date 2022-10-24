@@ -30,15 +30,17 @@ public class JsonlConverter {
 		System.out.println("please specify the input file: ");
 		String inputFileName = s.nextLine();
 		System.out.println("please enter the delimeter: ");
-		final String delimeter = s.nextLine();
+		String delimeter = s.nextLine().trim();
 		s.close();
 
-		char splitChar = delimeter.charAt(0);
 		int nameStrIndx = inputFileName.lastIndexOf("\\");
+		
 		String outputFileName = inputFileName.substring(0, nameStrIndx + 1)
-				+ inputFileName.substring(nameStrIndx + 1, inputFileName.length()) + "-jsonl-converted";
+				+ inputFileName.substring(nameStrIndx + 1, inputFileName.lastIndexOf(".")>0?inputFileName.lastIndexOf("."): inputFileName.length()) + "-jsonl-converted.jsonl";
 
-		int result = generateJsonlFile(inputFileName, delimeter, splitChar, outputFileName);
+		long startTime= System.currentTimeMillis();
+		int result = generateJsonlFile(inputFileName, delimeter, outputFileName);
+		System.out.println(System.currentTimeMillis()-startTime);
 		if (result == SUCCESS)
 			System.out.println("Jsonl formated file generated successfully in " + outputFileName);
 		else
@@ -46,7 +48,7 @@ public class JsonlConverter {
 
 	}
 
-	public static int generateJsonlFile(String inputFileName, final String delimeter, char splitChar,
+	public static int generateJsonlFile(String inputFileName,  String delimeter,
 			String outputFileName) {
 		Path inputPath = Paths.get(inputFileName);
 		try {
@@ -65,8 +67,7 @@ public class JsonlConverter {
 				lines.skip(1).forEach(line -> {
 					try {
 						outputStreamWriter.append( "{");
-						System.out.println(line);
-						List<String> values = customSplit(line,splitChar);
+						List<String> values = customSplit(line,delimeter.charAt(0));
 						StringBuilder sb = new StringBuilder();
 						for (int i = 0; i < fields.size() && i < values.size(); i++) {
 							String val=values.get(i);
