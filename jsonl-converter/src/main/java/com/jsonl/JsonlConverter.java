@@ -38,9 +38,9 @@ public class JsonlConverter {
 		String outputFileName = inputFileName.substring(0, nameStrIndx + 1)
 				+ inputFileName.substring(nameStrIndx + 1, inputFileName.lastIndexOf(".")>0?inputFileName.lastIndexOf("."): inputFileName.length()) + "-jsonl-converted.jsonl";
 
-		long startTime= System.currentTimeMillis();
+		//long startTime= System.currentTimeMillis();
 		int result = generateJsonlFile(inputFileName, delimeter, outputFileName);
-		System.out.println(System.currentTimeMillis()-startTime);
+		//System.out.println(System.currentTimeMillis()-startTime);
 		if (result == SUCCESS)
 			System.out.println("Jsonl formated file generated successfully in " + outputFileName);
 		else
