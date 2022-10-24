@@ -31,8 +31,6 @@ public class JsonlConverter {
 		String inputFileName = s.nextLine();
 		System.out.println("please enter the delimeter: ");
 		final String delimeter = s.nextLine();
-		System.out.println("please enter the skip charecter: ");
-		final String skipCharacter = s.nextLine();
 		s.close();
 
 		char splitChar = delimeter.charAt(0);
