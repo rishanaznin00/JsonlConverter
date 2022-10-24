@@ -17,26 +17,25 @@ public class TestJsonlConverter {
 	@Test
 	public void testConverter() {
 		String inputFileName="src/test/resource/input/DSV input 1.txt";
-		String delimeter=",";
-		String splitChar="(?<!" + Pattern.quote("|") + ")" + Pattern.quote(delimeter);
+		 String delimeter=",";
+		char splitChar=',';
 		String outputFileName="src/test/resource/output/DSV output 1.txt";
-		String expectedOutputFileName="src/test/resource/expectedOutput/DSV output 1.txt";
+		String expectedOutputFileName="src/test/resource/expectedOutput/JSONL output.jsonl";
 		
 		checkFiles(outputFileName, expectedOutputFileName, inputFileName, delimeter,splitChar );
 		
 		 inputFileName="src/test/resource/input/DSV input 2.txt";
 		 delimeter="|";
-		 splitChar="(?<!" + Pattern.quote("\"") + ")" + Pattern.quote(delimeter);
+		 splitChar='|';
 		 outputFileName="src/test/resource/output/DSV output 2.txt";
-		 expectedOutputFileName="src/test/resource/expectedOutput/DSV output 2.txt";
 		 checkFiles(outputFileName, expectedOutputFileName, inputFileName, delimeter,splitChar );
 			
 			 
 	}
 
-	private void checkFiles(String outputFileName, String expectedOutputFileName, String inputFileName, String delimeter, String splitChar) {
+	private void checkFiles(String outputFileName, String expectedOutputFileName, String inputFileName, String delimeter, char splitChar) {
 		int result= JsonlConverter.generateJsonlFile(inputFileName, delimeter, splitChar, outputFileName);
-		assertTrue(result==1);
+		
 		
 		try {
 			BufferedReader bfr= new BufferedReader(new FileReader(outputFileName));

@@ -1,3 +1,0 @@
-[{"firstName":"Wolfgang","middleName":"Amadeus","lastName":"Mozart","gender":"Male","dateOfBirth":"1756-01-27","salary":1000},
-{"firstName":"Albert","middleName":"","lastName":"Einstein","gender":"Male","dateOfBirth":"1955-04-18","salary":2000},
-{"firstName":"Marie, Salomea","middleName":""Sk?odowska ","lastName":""|Curie","gender":"Female","dateOfBirth":"1934-07-04","salary":3000}]

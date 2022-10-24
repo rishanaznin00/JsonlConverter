@@ -1,29 +1,21 @@
 package com.jsonl;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang3.math.NumberUtils;
@@ -33,7 +25,7 @@ public class JsonlConverter {
 	private static final int FAILED = 0;
 
 	public static void main(String[] args) {
-		// String os = System.getProperty("os.name").substring(0, 7);
+		
 		Scanner s = new Scanner(System.in);
 		System.out.println("please specify the input file: ");
 		String inputFileName = s.nextLine();
@@ -43,7 +35,7 @@ public class JsonlConverter {
 		final String skipCharacter = s.nextLine();
 		s.close();
 
-		String splitChar = "(?<!" + Pattern.quote(skipCharacter) + ")" + Pattern.quote(delimeter);
+		char splitChar = delimeter.charAt(0);
 		int nameStrIndx = inputFileName.lastIndexOf("\\");
 		String outputFileName = inputFileName.substring(0, nameStrIndx + 1)
 				+ inputFileName.substring(nameStrIndx + 1, inputFileName.length()) + "-jsonl-converted";
@@ -56,53 +48,45 @@ public class JsonlConverter {
 
 	}
 
-	public static int generateJsonlFile(String inputFileName, final String delimeter, String splitChar,
+	public static int generateJsonlFile(String inputFileName, final String delimeter, char splitChar,
 			String outputFileName) {
 		Path inputPath = Paths.get(inputFileName);
 		try {
 			//Creating the output file
 			File outputFile = new File(outputFileName);
 			outputFile.createNewFile();
-			OutputStreamWriter outputStreamWriter = new OutputStreamWriter(new FileOutputStream(outputFile));
-			
+			OutputStreamWriter outputStreamWriter = new OutputStreamWriter(new FileOutputStream(outputFile), Charset.forName("UTF-8"));
+		
 			//Getting the field values of json format
 			String firstLine = Files.lines(inputPath).findFirst().get();
 			final List<String> fields = Arrays.asList(firstLine.split(Pattern.quote(delimeter)));
 			
-			String secondLine = Files.lines(inputPath).skip(1).limit(2).findFirst().get();
+			
 			try (Stream<String> lines = Files.lines(inputPath)) {
-				//writing the 1st line with no comma at the end.
-				try {
-					outputStreamWriter.append("[{");
-					String[] values = secondLine.split(splitChar);
-					StringBuilder sb = new StringBuilder();
-					for (int i = 0; i < fields.size() && i < values.length; i++) {
-						String val = formatValue(values[i]);
-						sb.append("\"" + fields.get(i) + "\":" + val + (i < fields.size() - 1 ? "," : ""));
-					}
-					outputStreamWriter.append(sb + "}");
-				} catch (IOException e) {
-					throw e;
-				}
-
-				//writing the rest of lines with comma at the start
-				lines.skip(2).forEach(line -> {
+				
+				lines.skip(1).forEach(line -> {
 					try {
-						outputStreamWriter.append(",\n" + "{");
+						outputStreamWriter.append( "{");
 						System.out.println(line);
-						String[] values = line.split(splitChar);
+						List<String> values = customSplit(line,splitChar);
 						StringBuilder sb = new StringBuilder();
-						for (int i = 0; i < fields.size() && i < values.length; i++) {
-							String val = formatValue(values[i]);
-							sb.append("\"" + fields.get(i) + "\":" + val + (i < fields.size() - 1 ? "," : ""));
+						for (int i = 0; i < fields.size() && i < values.size(); i++) {
+							String val=values.get(i);
+							if(!val.isEmpty()) {
+								val = formatValue(values.get(i));
+								sb.append("\"" + fields.get(i) + "\": " + val + (i < fields.size() - 1 ? "," : ""));
+							}
+							
 						}
-						outputStreamWriter.append(sb + "}");
+						if(sb.charAt(sb.length()-1)==',')
+							sb.deleteCharAt(sb.length()-1);
+						outputStreamWriter.append(sb + "} \n");
 
 					} catch (IOException e) {
 						throw new RuntimeException();
 					}
 				});
-				outputStreamWriter.append("]");
+				
 				outputStreamWriter.close();
 
 			} catch (Exception e) {
@@ -151,14 +135,20 @@ public class JsonlConverter {
 		for(int i=0; i<ltr.length; i++) {
 			if(ltr[i]=='"') {
 				skip=!skip;
-			}else if(!skip && ltr[i]==splitChar) {
-				list.add(sb.toString());
-				sb=new StringBuilder();
-			}else if(ltr[i]!=splitChar) {
+			}else if(skip) {
 				sb.append(ltr[i]);
 			}
+			else if(!skip) {
+				if( ltr[i]==splitChar) {
+					list.add(sb.toString());
+					sb=new StringBuilder();
+				}else {
+					sb.append(ltr[i]);
+				}
+			}
 		}
-		return list;
+		list.add(sb.toString());
+		return  list;
 	}
 
 }
